@@ -7,8 +7,6 @@ export default function App() {
   const [loading, setLoading] = useState(false)
   const [answersChecked, setAnswersChecked] = useState(false)
   const [score, setScore] = useState(0)
-  
-  // Timer State (e.g., 60 seconds)
   const [timeLeft, setTimeLeft] = useState(60)
 
   // Decodes HTML entities
@@ -25,7 +23,7 @@ export default function App() {
     setScore(0)
     setTimeLeft(60) // Reset timer clock on clean fetch
     try {
-      const res = await fetch('https://opentdb.com/api.php?amount=5')
+      const res = await fetch('https://opentdb.com/api.php?amount=5&type=multiple')
       const data = await res.json()
       
       const formattedQuestions = data.results.map((q) => {
@@ -52,6 +50,15 @@ export default function App() {
   function handleStartQuiz() {
     setQuizStarted(true)
     fetchQuestions()
+  }
+
+  // Function to completely reset all states and return to the home landing screen
+  function handleQuitQuiz() {
+    setQuizStarted(false)
+    setQuestions([])
+    setAnswersChecked(false)
+    setScore(0)
+    setTimeLeft(60)
   }
 
   // Countdown Clock Side-Effect Hook
@@ -116,9 +123,14 @@ export default function App() {
               <p className="loading-text">Loading quiz questions...</p>
             ) : (
               <>
-                {/* Visual Timer Display Bar */}
-                <div className={`timer-banner ${timeLeft <= 10 ? 'urgent' : ''}`}>
-                  {answersChecked ? "Quiz Completed" : `Time Remaining: ${timeLeft}s`}
+                {/* Header Row holding Timer Banner and Quit Button side-by-side */}
+                <div className="quiz-header-row">
+                  <div className={`timer-banner ${timeLeft <= 10 ? 'urgent' : ''}`}>
+                    {answersChecked ? "Quiz Completed" : `Time Remaining: ${timeLeft}s`}
+                  </div>
+                  <button className="quit-btn" onClick={handleQuitQuiz}>
+                    Quit Quiz
+                  </button>
                 </div>
 
                 {questions.map((q) => (

@@ -1,10 +1,10 @@
 .quiz-body-wrapper {
-  /* 1. Allows the wrapper to adapt to content height instead of being locked to 550px */
+  /* Allows the wrapper to adapt to content height instead of being locked to 550px */
   min-height: 100vh; 
   width: 100%;
   max-width: 1000px; /* Limits the app width on massive screens */
   
-  /* 2. Keeps content centered horizontally, allows natural vertical layout */
+  /* Keeps content centered horizontally, allows natural vertical layout */
   margin: 0 auto; 
   display: flex;
   justify-content: center;
@@ -60,9 +60,18 @@
   gap: 30px; /* Increased gap to comfortably separate your large fonts */
 }
 
+/* Layout header for timer banner and quit button placement */
+.quiz-header-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  margin-bottom: 20px;
+}
+
 .question-block {
   text-align: left;
-   background-color: #f4f4f7;
+  background-color: #f4f4f7;
 }
 
 .question-text {
@@ -110,6 +119,23 @@
   cursor: pointer;
   align-self: center;
   margin-top: 20px;
+}
+
+.quit-btn {
+  background-color: transparent;
+  color: #c92a2a;
+  border: 2px solid #c92a2a;
+  padding: 10px 20px;
+  font-size: 1.5rem;
+  font-weight: bold;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.quit-btn:hover {
+  background-color: #f8bcbc;
+  color: #c92a2a;
 }
 
 .loading-text {
@@ -169,10 +195,12 @@
   padding: 10px 20px;
   border-radius: 8px;
   text-align: center;
-  align-self: center;
   width: fit-content;
-  margin-bottom: 20px;
   transition: all 0.3s ease;
+  
+  /* Overrides previous centering to align cleanly with layout row options */
+  margin-bottom: 0 !important; 
+  align-self: auto !important;
 }
 
 /* Turns the timer red when under 10 seconds */
@@ -214,6 +242,11 @@
   }
 
   /* 3. Scale down quiz gameplay elements */
+  .quiz-header-row {
+    flex-direction: column-reverse;
+    gap: 15px;
+  }
+
   .question-text {
     font-size: 1.65rem; /* Down from 2.45rem */
     line-height: 1.3;
@@ -235,7 +268,14 @@
   .timer-banner {
     font-size: 1.4rem; /* Down from 2rem */
     padding: 8px 16px;
-    margin-bottom: 10px;
+    width: 100%; /* Spans full horizontal layout row width on mobile viewports */
+    box-sizing: border-box;
+  }
+
+  .quit-btn {
+    font-size: 1.25rem;
+    width: 100%;
+    text-align: center;
   }
 
   .check-btn {
@@ -259,4 +299,3 @@
     font-size: 1.4rem;
   }
 }
-
