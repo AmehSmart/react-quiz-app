@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import './App.css'
 
 export default function App() {
@@ -7,21 +7,25 @@ export default function App() {
   const [loading, setLoading] = useState(false)
   const [answersChecked, setAnswersChecked] = useState(false)
   const [score, setScore] = useState(0)
+  
+  // Timer State (e.g., 60 seconds)
+  const [timeLeft, setTimeLeft] = useState(60)
 
-  // Decodes ugly HTML entities like &quot; and &amp;
+  // Decodes HTML entities
   function decodeHtml(html) {
     const txt = document.createElement('textarea')
     txt.innerHTML = html
     return txt.value
   }
 
-  // Fetches and formats data from the API
+  // Fetch Logic
   async function fetchQuestions() {
     setLoading(true)
     setAnswersChecked(false)
     setScore(0)
+    setTimeLeft(60) // Reset timer clock on clean fetch
     try {
-      const res = await fetch('https://opentdb.com/api.php?amount=10')
+      const res = await fetch('https://opentdb.com/api.php?amount=5')
       const data = await res.json()
       
       const formattedQuestions = data.results.map((q) => {
@@ -30,7 +34,7 @@ export default function App() {
         const allAnswers = [decodedCorrect, ...decodedIncorrects].sort(() => Math.random() - 0.5)
 
         return {
-          id: Math.random().toString(36).substr(2, 9), // Unique ID for tracking mapping
+          id: Math.random().toString(36).substr(2, 9),
           question: decodeHtml(q.question),
           correctAnswer: decodedCorrect,
           answers: allAnswers,
@@ -50,10 +54,28 @@ export default function App() {
     fetchQuestions()
   }
 
-  // Updates the state with the selected choice for a specific question
-  function handleSelectAnswer(questionId, answerValue) {
-    if (answersChecked) return // Lock selections if answers are checked
+  // Countdown Clock Side-Effect Hook
+  useEffect(() => {
+    // Only run the timer if the quiz has started and answers haven't been checked yet
+    if (!quizStarted || answersChecked || loading) return
 
+    // If time runs out, automatically check whatever answers they have selected
+    if (timeLeft === 0) {
+      handleCheckAnswers()
+      return
+    }
+
+    // Tick downwards every 1000ms (1 second)
+    const timerInterval = setInterval(() => {
+      setTimeLeft(prevTime => prevTime - 1)
+    }, 1000)
+
+    // Clear the interval when the component unmounts or states flip
+    return () => clearInterval(timerInterval)
+  }, [quizStarted, timeLeft, answersChecked, loading])
+
+  function handleSelectAnswer(questionId, answerValue) {
+    if (answersChecked) return 
     setQuestions(prevQuestions => 
       prevQuestions.map(q => 
         q.id === questionId ? { ...q, selectedAnswer: answerValue } : q
@@ -61,8 +83,8 @@ export default function App() {
     )
   }
 
-  // Calculates correct choices and locks state
   function handleCheckAnswers() {
+    if (answersChecked) return // Prevent multiple calculations
     let correctCount = 0
     questions.forEach(q => {
       if (q.selectedAnswer === q.correctAnswer) {
@@ -78,7 +100,7 @@ export default function App() {
       {!quizStarted ? (
         /* START SCREEN */
         <div className="quiz-body-wrapper">
-          <div className="start-contain">
+          <div className="start-container">
             <h1 className="quiz-title">Quizzical</h1>
             <p className="quiz-desc">Test your knowledge with 5 random multiple choice questions</p>
             <button className="start-btn" onClick={handleStartQuiz}>
@@ -94,28 +116,23 @@ export default function App() {
               <p className="loading-text">Loading quiz questions...</p>
             ) : (
               <>
+                {/* Visual Timer Display Bar */}
+                <div className={`timer-banner ${timeLeft <= 10 ? 'urgent' : ''}`}>
+                  {answersChecked ? "Quiz Completed" : `Time Remaining: ${timeLeft}s`}
+                </div>
+
                 {questions.map((q) => (
                   <div key={q.id} className="question-block">
                     <h3 className="question-text">{q.question}</h3>
                     <div className="answers-row">
                       {q.answers.map((answer, i) => {
-                        // Class logic for dynamic styling states
                         let btnClass = "answer-btn"
-                        
                         if (!answersChecked) {
-                          // Standard styling before grading
-                          if (q.selectedAnswer === answer) {
-                            btnClass += " selected"
-                          }
+                          if (q.selectedAnswer === answer) btnClass += " selected"
                         } else {
-                          // Post-grading styling classes
-                          if (answer === q.correctAnswer) {
-                            btnClass += " correct" // Always green
-                          } else if (q.selectedAnswer === answer && answer !== q.correctAnswer) {
-                            btnClass += " incorrect" // Clicked wrong answer turns red
-                          } else {
-                            btnClass += " dimmed" // Everything else fades out
-                          }
+                          if (answer === q.correctAnswer) btnClass += " correct"
+                          else if (q.selectedAnswer === answer && answer !== q.correctAnswer) btnClass += " incorrect"
+                          else btnClass += " dimmed"
                         }
 
                         return (
@@ -134,7 +151,6 @@ export default function App() {
                   </div>
                 ))}
                 
-                {/* Conditional UI block footer */}
                 {!answersChecked ? (
                   <button className="check-btn" onClick={handleCheckAnswers}>
                     Check answers
