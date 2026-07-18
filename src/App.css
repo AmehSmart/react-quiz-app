@@ -1,0 +1,159 @@
+.quiz-body-wrapper {
+  /* 1. Allows the wrapper to adapt to content height instead of being locked to 550px */
+  min-height: 100vh; 
+  width: 100%;
+  max-width: 1000px; /* Limits the app width on massive screens */
+  
+  /* 2. Keeps content centered horizontally, allows natural vertical layout */
+  margin: 0 auto; 
+  display: flex;
+  justify-content: center;
+  font-family: 'Inter', sans-serif;
+  
+  padding: 40px 20px; 
+  box-sizing: border-box;
+}
+
+/* Vertically centers the landing layout safely using auto margins */
+.start-container {
+  margin: auto 0; 
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.quiz-title {
+  color: #293264;
+  font-size: 5.5rem;
+  margin: 0 0 10px 0;
+}
+
+.quiz-desc {
+  color: #293264;
+  font-size: 3rem;
+  margin: 0 0 30px 0;
+}
+
+.start-btn {
+  background-color: #4d5b9e;
+  color: #f5f7fb;
+  border: none;
+  padding: 15px 50px;
+  font-size: 4.1rem;
+  border-radius: 15px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.start-btn:hover {
+  background-color: #3b4780;
+}
+
+/* Vertically centers the questions layout safely when there is room, scrolls when packed */
+.quiz-questions-container {
+  margin: auto 0; 
+  width: 100%;
+  padding: 20px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 30px; /* Increased gap to comfortably separate your large fonts */
+}
+
+.question-block {
+  text-align: left;
+}
+
+.question-text {
+  color: #293264;
+  font-size: 1.75rem;
+  margin-bottom: 12px;
+}
+
+.answers-row {
+  display: flex;
+  gap: 15px;
+  flex-wrap: wrap;
+  margin-bottom: 15px;
+}
+
+.answer-btn {
+  background-color: transparent;
+  border: 1px solid #4d5b9e;
+  color: #293264;
+  border-radius: 8px;
+  padding: 12px 24px; /* Increased padding slightly to balance the large text */
+  font-size: 1.9rem;
+  cursor: pointer;
+  transition: all 0.1s ease;
+}
+
+.answer-btn:hover {
+  background-color: #d6dbf5;
+}
+
+.divider {
+  border: none;
+  border-top: 1px solid #dbdef0;
+}
+
+.check-btn {
+  background-color: #4d5b9e;
+  color: white;
+  border: none;
+  padding: 16px 40px;
+  border-radius: 10px;
+  font-size: 1.75rem;
+  cursor: pointer;
+  align-self: center;
+  margin-top: 20px;
+}
+
+.loading-text {
+  color: #293264;
+  font-size: 1.65rem;
+  font-weight: bold;
+  text-align: center;
+  margin: auto 0;
+}
+
+/* Active states before checking answers */
+.answer-btn.selected {
+  background-color: #d6dbf5;
+  border-color: #d6dbf5;
+}
+
+/* Post-checking evaluation colors */
+.answer-btn.correct {
+  background-color: #94d7a2;
+  border-color: #94d7a2;
+  color: #293264;
+}
+
+.answer-btn.incorrect {
+  background-color: #f8bcbc;
+  border-color: #f8bcbc;
+  color: #293264;
+  opacity: 0.5;
+}
+
+.answer-btn.dimmed {
+  opacity: 0.5;
+}
+
+/* Footer Results Row styling */
+.results-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 24px;
+  margin-top: 20px;
+}
+
+.score-text {
+  font-family: 'Inter', sans-serif;
+  color: #293264;
+  font-size: 1.75rem; /* Scaled up to cleanly match your large check button font */
+  font-weight: bold;
+  margin: 0;
+}
